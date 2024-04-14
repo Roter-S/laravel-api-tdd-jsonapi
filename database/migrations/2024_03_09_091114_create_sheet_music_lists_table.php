@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sheet_music_lists', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->primary();
             $table->string('slug')->unique();
             $table->text('annotation');
             $table->date('start_date');
             $table->date('end_date');
             $table->foreignId('outfit_id')->constrained();
+            $table->foreignId('entity_id')->constrained();
             $table->timestamps();
         });
     }

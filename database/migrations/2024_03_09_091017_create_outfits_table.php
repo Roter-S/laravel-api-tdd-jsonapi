@@ -11,10 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('outfits', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->primary();
             $table->string('slug')->unique();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->foreignId('entity_id')->constrained();
             $table->timestamps();
         });
     }

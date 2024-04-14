@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('instruments', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->primary();
             $table->string('slug')->unique();
             $table->string('name');
             $table->string('type');
+            $table->foreignId('entity_id')->constrained();
             $table->timestamps();
         });
     }

@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Outfit;
+use App\Models\Entity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Outfit>
+ * @extends Factory<Entity>
  */
-class OutfitFactory extends Factory
+class EntityFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,9 +18,7 @@ class OutfitFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->slug,
-            'name' => $this->faker->name,
-            'description' => $this->faker->text,
+            //
         ];
     }
 }

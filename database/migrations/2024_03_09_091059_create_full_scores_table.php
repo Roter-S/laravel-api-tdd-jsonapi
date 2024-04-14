@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('full_scores', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->primary();
             $table->string('slug')->unique();
             $table->string('title');
             $table->string('composer');
             $table->string('year');
+            $table->foreignId('entity_id')->constrained();
             $table->timestamps();
         });
     }

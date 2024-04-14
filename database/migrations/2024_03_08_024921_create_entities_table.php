@@ -10,11 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('voices', function (Blueprint $table) {
+        Schema::create('entities', function (Blueprint $table) {
             $table->bigIncrements('id')->primary();
             $table->string('slug')->unique();
             $table->string('name');
-            $table->foreignId('instrument_id')->constrained();
+            $table->string('description');
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('voices');
+        Schema::dropIfExists('entities');
     }
 };
