@@ -67,7 +67,18 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.slug');
+        expect($response->status())->toBe(422)
+            ->and($response->headers->get('Content-Type'))->toBe('application/vnd.api+json')
+            ->and($response->json())->toMatchArray([
+                'errors' => [
+                    [
+                        'title' => 'Invalid data',
+                        'detail' => 'The data.attributes.slug field is required.',
+                        'source' => ['pointer' => '/data/attributes/slug']
+                    ]
+                ]
+            ]);
+        //$response->assertJsonValidationErrors('data.attributes.slug');
     });
 
     it('requires a name', function () {
