@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\InstrumentController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('instruments')->name('api.v1.instruments.')->group(function () {
-    Route::get('', [InstrumentController::class, 'index'])->name('index');
-    Route::get('{instrument}', [InstrumentController::class, 'show'])->name('show');
-    Route::post('', [InstrumentController::class, 'store'])->name('store');
-});
+Route::apiResource('users', UserController::class)->names('api.v1.users');

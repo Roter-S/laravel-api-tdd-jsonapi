@@ -39,8 +39,8 @@ class UserFactory extends Factory
             'status' => static::$status ??= $this->faker->boolean(),
             'roles' => $this->faker->randomElement(['admin', 'user']),
             'remember_token' => Str::random(10),
-            'instrument_id' => Instrument::factory(),
-            'voice_id' => Voice::factory(),
+            'instrument_id' => null,
+            'voice_id' => null,
             'entity_id' => null,
         ];
     }
