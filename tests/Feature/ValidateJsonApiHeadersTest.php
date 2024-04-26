@@ -3,7 +3,6 @@
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Support\Facades\Route;
 
-
 describe('Validate json api headers test', function () {
 
     beforeEach(function () {
@@ -12,22 +11,16 @@ describe('Validate json api headers test', function () {
     });
 
     it('accept header must be present in all requests', function () {
-        //$this->getJson('test_route')->assertStatus(406);
-
         $this->getJson('test_route')->assertSuccessful();
     });
 
     it('content type header must be present in all post requests', function () {
-        //$this->postJson('test_route')->assertStatus(415);
-
         $this->postJson('test_route', [], [
             'content-type' => 'application/vnd.api+json'
         ])->assertSuccessful();
     });
 
     it('content type header must be present in all patch requests', function () {
-       // $this->patchJson('test_route', [])->assertStatus(415);
-
         $this->patchJson('test_route', [], [
             'content-type' => 'application/vnd.api+json'
         ])->assertSuccessful();

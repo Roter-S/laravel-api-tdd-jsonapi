@@ -23,6 +23,7 @@ beforeEach(function () {
         'voice_id' => null,
         'entity_id' => null
     ];
+
 });
 
 it('can create admin users', function () {
@@ -67,18 +68,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        expect($response->status())->toBe(422)
-            ->and($response->headers->get('Content-Type'))->toBe('application/vnd.api+json')
-            ->and($response->json())->toMatchArray([
-                'errors' => [
-                    [
-                        'title' => 'Invalid data',
-                        'detail' => 'The data.attributes.slug field is required.',
-                        'source' => ['pointer' => '/data/attributes/slug']
-                    ]
-                ]
-            ]);
-        //$response->assertJsonValidationErrors('data.attributes.slug');
+        $response->assertJsonApiValidationErrors('slug');
     });
 
     it('requires a name', function () {
@@ -91,7 +81,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.name');
+        $response->assertJsonApiValidationErrors('name');
     });
 
     it('requires a last name', function () {
@@ -104,7 +94,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.last_name');
+        $response->assertJsonApiValidationErrors('last_name');
     });
 
     it('requires an email', function () {
@@ -117,7 +107,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.email');
+        $response->assertJsonApiValidationErrors('email');
     });
 
     it('requires a valid email', function () {
@@ -130,7 +120,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.email');
+        $response->assertJsonApiValidationErrors('email');
     });
 
     it('requires a unique email', function () {
@@ -143,7 +133,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.email');
+        $response->assertJsonApiValidationErrors('email');
     });
 
     it('requires a password', function () {
@@ -156,7 +146,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.password');
+        $response->assertJsonApiValidationErrors('password');
     });
 
     it('requires a date of birth', function () {
@@ -169,7 +159,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.date_of_birth');
+        $response->assertJsonApiValidationErrors('date_of_birth');
     });
 
     it('requires a valid date of birth', function () {
@@ -182,7 +172,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.date_of_birth');
+        $response->assertJsonApiValidationErrors('date_of_birth');
     });
 
     it('requires a phone number', function () {
@@ -195,7 +185,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.phone_number');
+        $response->assertJsonApiValidationErrors('phone_number');
     });
 
     it('requires a status', function () {
@@ -208,7 +198,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.status');
+        $response->assertJsonApiValidationErrors('status');
     });
 
     it('requires a valid status', function () {
@@ -221,7 +211,7 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.status');
+        $response->assertJsonApiValidationErrors('status');
     });
 
     it('requires a roles', function () {
@@ -234,6 +224,6 @@ describe('validation errors', function () {
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.roles');
+        $response->assertJsonApiValidationErrors('roles');
     });
 });
