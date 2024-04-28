@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Assert as PHPUnit;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class JsonApiServiceProvider extends ServiceProvider
 {
@@ -20,17 +23,39 @@ class JsonApiServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        TestResponse::macro('assertJsonApiValidationErrors', function ($attribute) {
-            $detailAttribute = str_replace('_', ' ', $attribute);
-            expect($this->status())->toBe(422)
-                ->and($this->headers->get('content-type'))->toBe('application/vnd.api+json')
-                ->and($this->assertJsonStructure([
+        TestResponse::macro('assertJsonApiValidationErrors', $this->assertJsonApiValidationErrors());
+    }
+
+    private function assertJsonApiValidationErrors()
+    {
+        return function ($attribute) {
+
+            $pointer = Str::of($attribute)->startsWith('data')
+                ? "/". Str::replace('.', '/', $attribute)
+                : "/data/attributes/$attribute";
+
+            try {
+                $this->assertJsonFragment([
+                    'source' => ['pointer' => $pointer],
+                ]);
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail("Failed to find a JSON:API validation error for key: '$attribute'"
+                    . PHP_EOL . PHP_EOL .
+                    $e->getMessage());
+            }
+            try {
+                $this->assertJsonStructure([
                     'errors' => [
                         ['title', 'detail', 'source' => ['pointer']]
                     ]
-                ])->assertJsonFragment([
-                    'source' => ['pointer' => "/data/attributes/$attribute"],
-                ]));
-        });
+                ]);
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail("Failed to find a valid JSON:API error response"
+                    . PHP_EOL . PHP_EOL .
+                    $e->getMessage());
+            }
+            expect($this->status())->toBe(422)
+                ->and($this->headers->get('content-type'))->toBe('application/vnd.api+json');
+        };
     }
 }

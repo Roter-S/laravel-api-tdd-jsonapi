@@ -15,13 +15,24 @@ describe('Validate json api headers test', function () {
     });
 
     it('content type header must be present in all post requests', function () {
-        $this->postJson('test_route', [], [
+        $this->postJson('test_route', [
+            'data' => [
+                'type' => 'test',
+                'attributes' => ['name' => 'test'],
+            ]
+        ], [
             'content-type' => 'application/vnd.api+json'
         ])->assertSuccessful();
     });
 
     it('content type header must be present in all patch requests', function () {
-        $this->patchJson('test_route', [], [
+        $this->patchJson('test_route', [
+            'data' => [
+                'id' => '1',
+                'type' => 'test',
+                'attributes' => ['name' => 'test'],
+            ]
+        ], [
             'content-type' => 'application/vnd.api+json'
         ])->assertSuccessful();
     });
@@ -44,11 +55,22 @@ describe('Validate json api headers test', function () {
 
         $this->getJson('empty_response')->assertHeaderMissing('content-type');
 
-        $this->postJson('empty_response', [], [
+        $this->postJson('empty_response', [
+            'data' => [
+                'type' => 'test',
+                'attributes' => ['name' => 'test'],
+            ]
+        ], [
             'content-type' => 'application/vnd.api+json'
         ])->assertHeaderMissing('content-type');
 
-        $this->patchJson('empty_response', [], [
+        $this->patchJson('empty_response', [
+            'data' => [
+                'id' => '1',
+                'type' => 'test',
+                'attributes' => ['name' => 'test'],
+            ]
+        ], [
             'content-type' => 'application/vnd.api+json'
         ])->assertHeaderMissing('content-type');
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(ValidateJsonApiHeaders::class);
+        $middleware->append(ValidateJsonApiDocument::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (ValidationException $exception, Request $request) {
@@ -31,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
                             'source' => ['pointer' => $fieldFormatted]
                         ];
                     })->values()
-                ], 422);
+                ], 422, ['content-type' => 'application/vnd.api+json']);
             }
             return response()->withErrors($exception->validator->errors());
         });
