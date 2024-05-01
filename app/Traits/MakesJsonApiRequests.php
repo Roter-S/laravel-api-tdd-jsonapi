@@ -2,14 +2,27 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 
 trait MakesJsonApiRequests
 {
+    protected bool $formatJsonApiDocument = true;
+
+    public function withoutJsonApiDocumentFormatting(): void
+    {
+        $this->formatJsonApiDocument = false;
+    }
+
     public function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse
     {
         $headers['accept'] = 'application/vnd.api+json';
-        return parent::json($method, $uri, $data, $headers, $options);
+        if ($this->formatJsonApiDocument) {
+            $formattedData['data']['attributes'] = $data;
+            $formattedData['data']['type'] = (string)Str::of($uri)->after('api/v1/');
+        }
+
+        return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
     public function postJson($uri, array $data = [], array $headers = [], $options = 0): TestResponse

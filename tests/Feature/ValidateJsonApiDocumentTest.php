@@ -4,8 +4,8 @@ use App\Http\Middleware\ValidateJsonApiDocument;
 use Illuminate\Support\Facades\Route;
 
 describe('Validate json api headers test', function () {
-
     beforeEach(function () {
+        $this->withoutJsonApiDocumentFormatting();
         Route::any('test_route', fn() => response()->json(['message' => 'success']))
             ->middleware(ValidateJsonApiDocument::class);
     });
