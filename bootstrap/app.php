@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ApiValidationExceptionHandler;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Middleware\ValidateJsonApiHeaders;
 use Illuminate\Foundation\Application;
@@ -21,21 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(ValidateJsonApiDocument::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (ValidationException $exception, Request $request) {
-            if ($request->expectsJson()) {
-                $errors = $exception->errors();
-                return response()->json([
-                    'errors' => collect($errors)->map(function ($message, $field) use (&$customErrors) {
-                        $fieldFormatted = '/' . str_replace('.', '/', $field);
-                        return [
-                            'title' => 'Invalid data',
-                            'detail' => $message[0],
-                            'source' => ['pointer' => $fieldFormatted]
-                        ];
-                    })->values()
-                ], 422, ['content-type' => 'application/vnd.api+json']);
-            }
-            return response()->withErrors($exception->validator->errors());
+        $exceptions->renderable(function (ValidationException $exception, Request $request) {
+            $handler = new ApiValidationExceptionHandler();
+            return $handler->handle($exception, $request);
         });
     })
     ->create();
