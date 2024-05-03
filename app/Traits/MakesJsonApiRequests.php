@@ -18,10 +18,8 @@ trait MakesJsonApiRequests
     {
         $headers['accept'] = 'application/vnd.api+json';
         if ($this->formatJsonApiDocument) {
-            $formattedData['data']['attributes'] = $data;
-            $formattedData['data']['type'] = (string)Str::of($uri)->after('api/v1/');
+            $formattedData = $this->getFormattedData($uri, $data);
         }
-
         return parent::json($method, $uri, $formattedData ?? $data, $headers, $options);
     }
 
@@ -35,5 +33,24 @@ trait MakesJsonApiRequests
     {
         $headers['content-type'] = 'application/vnd.api+json';
         return parent::patchJson($uri, $data, $headers, $options);
+    }
+
+    /**
+     * @param $uri
+     * @param array $data
+     * @return array
+     */
+    private function getFormattedData($uri, array $data): array
+    {
+        $path = parse_url($uri, PHP_URL_PATH);
+        $type = (string)Str::of($path)->after('api/v1/')->before('/');
+        $id = (string)Str::of($path)->after($type)->replace('/', '');
+        return [
+            'data' => array_filter([
+                'id' => $id,
+                'type' => $type,
+                'attributes' => array_filter($data)
+            ])
+        ];
     }
 }

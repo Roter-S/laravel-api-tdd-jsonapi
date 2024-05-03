@@ -42,9 +42,24 @@ class UserController extends Controller
         return UserResource::make($user);
     }
 
-    public function update(Request $request, string $id)
+    public function update(User $user, Request $request)
     {
-        //
+        $request->validate([
+            'data.attributes.slug' => ['required', 'string'],
+            'data.attributes.name' => ['required', 'string'],
+            'data.attributes.last_name' => ['required', 'string'],
+            'data.attributes.email' => ['required', 'email'],
+            'data.attributes.password' => ['nullable', 'string'],
+            'data.attributes.date_of_birth' => ['required', 'date'],
+            'data.attributes.phone_number' => ['required', 'string'],
+            'data.attributes.status' => ['required', 'boolean'],
+            'data.attributes.roles' => ['required', 'string'],
+            'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
+            'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
+            'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
+        ]);
+        $user->update($request->input('data.attributes'));
+        return UserResource::make($user);
     }
 
     public function destroy(string $id)

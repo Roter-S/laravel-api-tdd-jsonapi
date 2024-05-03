@@ -31,15 +31,14 @@ it('can create admin users', function () {
 
     $attributes = $this->attributes;
 
-    $response = $this->postJson(route('api.v1.users.store'), $attributes);
+    $response = $this->postJson(route('api.v1.users.store'), $attributes)->assertCreated();
 
     $user = User::first();
     unset($attributes['password']);
     unset($attributes['remember_token']);
     $attributes['created_at'] = $user->created_at->toISOString();
     $attributes['updated_at'] = $user->updated_at->toISOString();
-    expect($response->status())->toBe(201)
-        ->and($response->headers->get('Location'))->toBe(route('api.v1.users.show', $user))
+    expect($response->headers->get('Location'))->toBe(route('api.v1.users.show', $user))
         ->and($response->json())->toMatchArray([
             'data' => [
                 'type' => 'users',

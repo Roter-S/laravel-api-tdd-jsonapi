@@ -29,7 +29,6 @@ class JsonApiServiceProvider extends ServiceProvider
     private function assertJsonApiValidationErrors()
     {
         return function ($attribute) {
-
             $pointer = Str::of($attribute)->startsWith('data')
                 ? "/". Str::replace('.', '/', $attribute)
                 : "/data/attributes/$attribute";
