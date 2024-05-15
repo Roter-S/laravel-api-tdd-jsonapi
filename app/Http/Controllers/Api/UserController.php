@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SaveUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -20,50 +22,23 @@ class UserController extends Controller
         return UserResource::make($user);
     }
 
-    public function store(Request $request)
+    public function store(SaveUserRequest $request)
     {
-        $request->validate([
-            'data.attributes.slug' => ['required', 'string', 'unique:users,slug'],
-            'data.attributes.name' => ['required', 'string'],
-            'data.attributes.last_name' => ['required', 'string'],
-            'data.attributes.email' => ['required', 'email', 'unique:users,email'],
-            'data.attributes.password' => ['required', 'string'],
-            'data.attributes.date_of_birth' => ['required', 'date'],
-            'data.attributes.phone_number' => ['required', 'string'],
-            'data.attributes.status' => ['required', 'boolean'],
-            'data.attributes.roles' => ['required', 'string'],
-            'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
-            'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
-            'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
-        ]);
-
-        $user = User::create($request->input('data.attributes'));
+        $user = User::create($request->validated());
 
         return UserResource::make($user);
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $user, SaveUserRequest $request)
     {
-        $request->validate([
-            'data.attributes.slug' => ['required', 'string'],
-            'data.attributes.name' => ['required', 'string'],
-            'data.attributes.last_name' => ['required', 'string'],
-            'data.attributes.email' => ['required', 'email'],
-            'data.attributes.password' => ['nullable', 'string'],
-            'data.attributes.date_of_birth' => ['required', 'date'],
-            'data.attributes.phone_number' => ['required', 'string'],
-            'data.attributes.status' => ['required', 'boolean'],
-            'data.attributes.roles' => ['required', 'string'],
-            'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
-            'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
-            'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
-        ]);
-        $user->update($request->input('data.attributes'));
+        $user->update($request->validated());
         return UserResource::make($user);
     }
 
-    public function destroy(string $id)
+    public function destroy(User $user): Response
     {
-        //
+        $user->delete();
+
+        return response()->noContent();
     }
 }
