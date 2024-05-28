@@ -26,7 +26,7 @@ class JsonApiServiceProvider extends ServiceProvider
         TestResponse::macro('assertJsonApiValidationErrors', $this->assertJsonApiValidationErrors());
     }
 
-    private function assertJsonApiValidationErrors()
+    private function assertJsonApiValidationErrors(): \Closure
     {
         return function ($attribute) {
             $pointer = Str::of($attribute)->startsWith('data')

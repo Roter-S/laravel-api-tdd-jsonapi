@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveAdminUserRequest;
@@ -16,27 +16,26 @@ class AdminUserController extends Controller
         return AdminUserCollection::make(User::all());
     }
 
-    public function show(User $user)
+    public function show(User $admin_user)
     {
-        return AdminUserResource::make($user);
+        return AdminUserResource::make($admin_user);
     }
 
     public function store(SaveAdminUserRequest $request)
     {
         $user = User::create($request->validated());
-
         return AdminUserResource::make($user);
     }
 
-    public function update(User $user, SaveAdminUserRequest $request)
+    public function update(User $admin_user, SaveAdminUserRequest $request): AdminUserResource
     {
-        $user->update($request->validated());
-        return AdminUserResource::make($user);
+        $admin_user->update($request->validated());
+        return AdminUserResource::make($admin_user);
     }
 
-    public function destroy(User $user): Response
+    public function destroy(User $admin_user): Response
     {
-        $user->delete();
+        $admin_user->delete();
 
         return response()->noContent();
     }

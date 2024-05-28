@@ -12,7 +12,7 @@ describe('List user test', function () {
 
         $user = User::factory()->create();
 
-        $response = $this->getJson(route('api.v1.users.show', $user));
+        $response = $this->getJson(route('api.v1.admin-users.show', $user));
 
         expect($response->json())->toMatchArray([
             'data' => [
@@ -20,7 +20,7 @@ describe('List user test', function () {
                 'id' => (string)$user->getRouteKey(),
                 'attributes' => $user->toArray(),
                 'links' => [
-                    'self' => route('api.v1.users.show', $user),
+                    'self' => route('api.v1.admin-users.show', $user),
                 ],
             ],
         ]);
@@ -30,7 +30,7 @@ describe('List user test', function () {
         $this->withoutExceptionHandling();
 
         $users = User::factory()->count(3)->create();
-        $response = $this->getJson(route('api.v1.users.index'));
+        $response = $this->getJson(route('api.v1.admin-users.index'));
         expect($response->json())->toMatchArray([
             'data' => [
                 [
@@ -38,7 +38,7 @@ describe('List user test', function () {
                     'id' => (string)$users[0]->getRouteKey(),
                     'attributes' => $users->toArray()[0],
                     'links' => [
-                        'self' => route('api.v1.users.show', $users[0]),
+                        'self' => route('api.v1.admin-users.show', $users[0]),
                     ],
                 ],
                 [
@@ -46,7 +46,7 @@ describe('List user test', function () {
                     'id' => (string)$users[1]->getRouteKey(),
                     'attributes' => $users->toArray()[1],
                     'links' => [
-                        'self' => route('api.v1.users.show', $users[1]),
+                        'self' => route('api.v1.admin-users.show', $users[1]),
                     ],
                 ],
                 [
@@ -54,12 +54,12 @@ describe('List user test', function () {
                     'id' => (string)$users[2]->getRouteKey(),
                     'attributes' => $users->toArray()[2],
                     'links' => [
-                        'self' => route('api.v1.users.show', $users[2]),
+                        'self' => route('api.v1.admin-users.show', $users[2]),
                     ],
                 ],
             ],
             'links' => [
-                'self' => route('api.v1.users.index')
+                'self' => route('api.v1.admin-users.index')
             ]
         ]);
     });
