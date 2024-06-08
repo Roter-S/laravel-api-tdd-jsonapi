@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Instrument;
+use App\Enums\Roles;
+use App\Enums\UserStatus;
 use App\Models\User;
-use App\Models\Voice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ class UserFactory extends Factory
      * The current password being used by the factory.
      */
     protected static ?string $password;
-    protected static ?bool $status;
+    protected static ?string $status;
 
     /**
      * Define the model's default state.
@@ -36,8 +36,8 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'date_of_birth' => $this->faker->date(),
             'phone_number' => $this->faker->phoneNumber(),
-            'status' => static::$status ??= $this->faker->boolean(),
-            'roles' => $this->faker->randomElement(['admin', 'user']),
+            'status' => static::$status ??= $this->faker->randomElement([UserStatus::Active->value, UserStatus::Inactive->value]),
+            'roles' => [$this->faker->randomElement([Roles::GroupAdministrator->value, Roles::Musician->value])],
             'remember_token' => Str::random(10),
             'instrument_id' => null,
             'voice_id' => null,
@@ -50,7 +50,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

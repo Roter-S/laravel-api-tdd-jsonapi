@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->user = User::factory()->create(['status' => true]);
+    $this->user = User::factory()->create();
 });
 
 it('can update admin users', function () {
@@ -189,9 +189,9 @@ describe('validation errors', function () {
 
     it('requires a valid status', function () {
         $user = $this->user;
-        $user->status = 'invalid-status';
         $this->patchJson(route('api.v1.admin-users.update', $user), [
-            'name' => 'Prueba de actualización'
+            'name' => 'Prueba de actualización',
+            'status' => 'invalid-status'
         ])->assertJsonApiValidationErrors('status');
     });
 

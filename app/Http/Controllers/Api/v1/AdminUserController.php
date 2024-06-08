@@ -13,7 +13,27 @@ class AdminUserController extends Controller
 {
     public function index(): AdminUserCollection
     {
-        return AdminUserCollection::make(User::all());
+        $sortField = request('sort', 'id');
+        $sortDirection = str_starts_with($sortField, '-') ? 'desc' : 'asc';
+        $sortField = ltrim($sortField, '-');
+
+        $adminUsers = User::all();
+
+        $adminUsers = $adminUsers->sortBy(function ($user) use ($sortField) {
+            $value = $user->$sortField;
+
+            if ($value instanceof \BackedEnum) {
+                $value = $value->value;
+            }
+            if (isJsonField($sortField, ['roles'])) {
+                $jsonData = is_array($value) ? $value : json_decode($value, true);
+                return is_array($jsonData) ? implode(',', $jsonData) : '';
+            }
+
+            return $value;
+        }, SORT_REGULAR, $sortDirection === 'desc');
+
+        return AdminUserCollection::make($adminUsers);
     }
 
     public function show(User $admin_user)

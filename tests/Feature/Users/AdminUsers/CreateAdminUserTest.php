@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,8 +17,8 @@ beforeEach(function () {
         'password' => \Illuminate\Support\Facades\Hash::make('password'),
         'date_of_birth' => fake()->date(),
         'phone_number' => fake()->phoneNumber(),
-        'status' => true,
-        'roles' => 'admin',
+        'status' => fake()->randomElement([UserStatus::Active->value, UserStatus::Inactive->value]),
+        'roles' => ['admin'],
         'remember_token' => null,
         'instrument_id' => null,
         'voice_id' => null,

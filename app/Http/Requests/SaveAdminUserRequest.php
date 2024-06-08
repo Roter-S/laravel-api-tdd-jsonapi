@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserStatus;
 use App\Rules\Slug;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class SaveAdminUserRequest extends FormRequest
 {
@@ -45,8 +47,8 @@ class SaveAdminUserRequest extends FormRequest
             ],
             'data.attributes.date_of_birth' => ['required', 'date'],
             'data.attributes.phone_number' => ['required', 'string'],
-            'data.attributes.status' => ['required', 'boolean'],
-            'data.attributes.roles' => ['required', 'string'],
+            'data.attributes.status' => ['required', new Enum(UserStatus::class)],
+            'data.attributes.roles' => ['required', 'array'],
             'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
             'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
             'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
