@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\AdminUserController;
-use App\Http\Middleware\ValidateJsonApiHeaders;
+use App\Http\Controllers\Api\v1\AdminUserController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('users', AdminUserController::class)->names('api.v1.users');
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    Route::apiResource('admin-users', AdminUserController::class);
+});

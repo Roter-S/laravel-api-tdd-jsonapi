@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +22,8 @@ return new class extends Migration {
             $table->rememberToken();
             $table->date('date_of_birth')->nullable();
             $table->string('phone_number')->nullable();
-            $table->boolean('status')->default(true);
-            $table->string('roles');
+            $table->string('status')->default(UserStatus::Active);
+            $table->json('roles')->nullable();
             $table->unsignedBigInteger('instrument_id')->nullable();
             $table->unsignedBigInteger('voice_id')->nullable();
             $table->unsignedBigInteger('entity_id')->nullable();

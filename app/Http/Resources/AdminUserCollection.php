@@ -17,7 +17,7 @@ class AdminUserCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'links' => [
-                'self' => route('api.v1.users.index')
+                'self' => route('api.v1.admin-users.index')
             ]
         ];
     }

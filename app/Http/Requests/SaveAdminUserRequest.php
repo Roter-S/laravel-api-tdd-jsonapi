@@ -2,8 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserStatus;
+use App\Rules\Slug;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class SaveAdminUserRequest extends FormRequest
 {
@@ -22,38 +26,35 @@ class SaveAdminUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->isMethod('patch')) {
-            return [
-                'data.attributes.slug' => ['required', 'string'],
-                'data.attributes.name' => ['required', 'string'],
-                'data.attributes.last_name' => ['required', 'string'],
-                'data.attributes.email' => ['required', 'email'],
-                'data.attributes.password' => ['nullable', 'string'],
-                'data.attributes.date_of_birth' => ['required', 'date'],
-                'data.attributes.phone_number' => ['required', 'string'],
-                'data.attributes.status' => ['required', 'boolean'],
-                'data.attributes.roles' => ['required', 'string'],
-                'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
-                'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
-                'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
-            ];
-        }
-
+        $userId = $this->route('admin_user');
         return [
-            'data.attributes.slug' => ['required', 'string', 'unique:users,slug'],
+            'data.attributes.slug' => [
+                'required',
+                'alpha_dash',
+                new Slug(),
+                Rule::unique('users', 'slug')->ignore($userId)
+            ],
             'data.attributes.name' => ['required', 'string'],
             'data.attributes.last_name' => ['required', 'string'],
-            'data.attributes.email' => ['required', 'email', 'unique:users,email'],
-            'data.attributes.password' => ['required', 'string'],
+            'data.attributes.email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId)
+            ],
+            'data.attributes.password' => [
+                Rule::requiredIf(!$userId),
+                'string'
+            ],
             'data.attributes.date_of_birth' => ['required', 'date'],
             'data.attributes.phone_number' => ['required', 'string'],
-            'data.attributes.status' => ['required', 'boolean'],
-            'data.attributes.roles' => ['required', 'string'],
+            'data.attributes.status' => ['required', new Enum(UserStatus::class)],
+            'data.attributes.roles' => ['required', 'array'],
             'data.attributes.instrument_id' => ['nullable', 'integer', 'exists:instruments,id'],
             'data.attributes.voice_id' => ['nullable', 'integer', 'exists:voices,id'],
             'data.attributes.entity_id' => ['nullable', 'integer', 'exists:entities,id']
         ];
     }
+
 
     public function validated($key = null, $default = null): array
     {

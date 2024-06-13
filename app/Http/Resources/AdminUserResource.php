@@ -36,7 +36,7 @@ class AdminUserResource extends JsonResource
                 'updated_at' => $this->resource->updated_at,
             ],
             'links' => [
-                'self' => route('api.v1.users.show', $this->resource),
+                'self' => route('api.v1.admin-users.show', $this->resource),
             ],
         ];
     }
@@ -45,7 +45,7 @@ class AdminUserResource extends JsonResource
     {
         return parent::toResponse($request)
             ->withHeaders([
-                'Location' => route('api.v1.users.show', $this->resource)
+                'Location' => route('api.v1.admin-users.show', $this->resource)
             ]);
     }
 }
