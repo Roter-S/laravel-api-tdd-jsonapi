@@ -13,42 +13,18 @@ use Illuminate\Http\Response;
 class AdminUserController extends Controller
 {
 
-    public function index(Request $request): AdminUserCollection
+    public function index(): AdminUserCollection
     {
-        $adminUsersQuery = User::query();
-
-        if ($request->has('sort')) {
-            // Splits the sort fields passed in the request into an array
-            $sortFields = explode(',', $request->input('sort'));
-
-            // Allowed sort fields
-            $allowedSortFields = [
-                'slug',
-                'name',
-                'last_name',
-                'email',
-                'password',
-                'date_of_birth',
-                'phone_number',
-                'status',
-            ];
-
-            // Cycle through the sort fields
-            foreach ($sortFields as $sortField) {
-
-                // Determines the sort direction (ascending or descending)
-                $sortDirection = str_starts_with($sortField, '-') ? 'desc' : 'asc';
-
-                // Removes '-' sign from sort field if present
-                $sortField = ltrim($sortField, '-');
-
-                // Check if the sort field is allowed
-                abort_unless(in_array($sortField, $allowedSortFields), 400, 'Invalid sort field');
-
-                // Sort the query by the sort field
-                $adminUsersQuery->orderBy($sortField, $sortDirection);
-            }
-        }
+        $adminUsersQuery = User::allowedSorts([
+            'slug',
+            'name',
+            'last_name',
+            'email',
+            'password',
+            'date_of_birth',
+            'phone_number',
+            'status',
+        ]);
 
         return AdminUserCollection::make($adminUsersQuery->get());
     }
