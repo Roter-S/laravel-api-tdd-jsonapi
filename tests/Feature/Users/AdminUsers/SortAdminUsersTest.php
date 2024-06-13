@@ -169,55 +169,24 @@ describe('Sort admin users test', function () {
         ]);
     });
 
-    it('can sort admin user by roles', function () {
-        User::factory()->create(['roles' => [Roles::SuperAdministrator->value]]);
-        User::factory()->create(['roles' => [Roles::Musician->value]]);
-        User::factory()->create(['roles' => [Roles::GroupAdministrator->value, Roles::Musician->value]]);
+    it('can sort admin user by name and last_name', function () {
+        User::factory()->create(['name' => 'A Name', 'last_name' => 'A Last Name']);
+        User::factory()->create(['name' => 'B Name', 'last_name' => 'B Last Name']);
+        User::factory()->create(['name' => 'A Name', 'last_name' => 'C Last Name']);
 
-        $url = route('api.v1.admin-users.index', ['sort' => 'roles']);
-        $response = $this->getJson($url);
-
-        $data = $response->json('data');
-
-        $this->assertEquals(
-            ['group_administrator', 'musician'],
-            $data[2]['attributes']['roles']
-        );
-
-        $this->assertEquals(
-            ['musician'],
-            $data[1]['attributes']['roles']
-        );
-
-        $this->assertEquals(
-            ['super_administrator'],
-            $data[0]['attributes']['roles']
-        );
+        $url = route('api.v1.admin-users.index', ['sort' => 'name,-last_name']);
+        $this->getJson($url)->assertSeeInOrder([
+            'C Last Name',
+            'A Last Name',
+            'B Last Name',
+        ]);
     });
 
-    it('can sort admin user by roles descending', function () {
-        User::factory()->create(['roles' => [Roles::SuperAdministrator->value]]);
-        User::factory()->create(['roles' => [Roles::Musician->value]]);
-        User::factory()->create(['roles' => [Roles::GroupAdministrator->value, Roles::Musician->value]]);
+    it('cannot sort admin user by unknown fields', function () {
+        User::factory()->count(3)->create();
 
-        $url = route('api.v1.admin-users.index', ['sort' => '-roles']);
-        $response = $this->getJson($url);
-        $data = $response->json('data');
-
-        $this->assertEquals(
-            ['super_administrator'],
-            $data[0]['attributes']['roles']
-        );
-
-        $this->assertEquals(
-            ['musician'],
-            $data[1]['attributes']['roles']
-        );
-
-        $this->assertEquals(
-            ['group_administrator', 'musician'],
-            $data[2]['attributes']['roles']
-        );
+        $url = route('api.v1.admin-users.index', ['sort' => 'unknown_field']);
+        $this->getJson($url)->assertStatus(400);
     });
 
 });

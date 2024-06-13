@@ -7,34 +7,52 @@ use App\Http\Requests\SaveAdminUserRequest;
 use App\Http\Resources\AdminUserCollection;
 use App\Http\Resources\AdminUserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AdminUserController extends Controller
 {
-    public function index(): AdminUserCollection
+
+    public function index(Request $request): AdminUserCollection
     {
-        $sortField = request('sort', 'id');
-        $sortDirection = str_starts_with($sortField, '-') ? 'desc' : 'asc';
-        $sortField = ltrim($sortField, '-');
+        $adminUsersQuery = User::query();
 
-        $adminUsers = User::all();
+        if ($request->has('sort')) {
+            // Splits the sort fields passed in the request into an array
+            $sortFields = explode(',', $request->input('sort'));
 
-        $adminUsers = $adminUsers->sortBy(function ($user) use ($sortField) {
-            $value = $user->$sortField;
+            // Allowed sort fields
+            $allowedSortFields = [
+                'slug',
+                'name',
+                'last_name',
+                'email',
+                'password',
+                'date_of_birth',
+                'phone_number',
+                'status',
+            ];
 
-            if ($value instanceof \BackedEnum) {
-                $value = $value->value;
+            // Cycle through the sort fields
+            foreach ($sortFields as $sortField) {
+
+                // Determines the sort direction (ascending or descending)
+                $sortDirection = str_starts_with($sortField, '-') ? 'desc' : 'asc';
+
+                // Removes '-' sign from sort field if present
+                $sortField = ltrim($sortField, '-');
+
+                // Check if the sort field is allowed
+                abort_unless(in_array($sortField, $allowedSortFields), 400, 'Invalid sort field');
+
+                // Sort the query by the sort field
+                $adminUsersQuery->orderBy($sortField, $sortDirection);
             }
-            if (isJsonField($sortField, ['roles'])) {
-                $jsonData = is_array($value) ? $value : json_decode($value, true);
-                return is_array($jsonData) ? implode(',', $jsonData) : '';
-            }
+        }
 
-            return $value;
-        }, SORT_REGULAR, $sortDirection === 'desc');
-
-        return AdminUserCollection::make($adminUsers);
+        return AdminUserCollection::make($adminUsersQuery->get());
     }
+
 
     public function show(User $admin_user)
     {
