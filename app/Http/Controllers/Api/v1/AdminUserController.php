@@ -7,7 +7,6 @@ use App\Http\Requests\SaveAdminUserRequest;
 use App\Http\Resources\AdminUserCollection;
 use App\Http\Resources\AdminUserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AdminUserController extends Controller
@@ -26,14 +25,7 @@ class AdminUserController extends Controller
             'status',
         ]);
 
-        return AdminUserCollection::make(
-            $adminUsersQuery->paginate(
-                $perPage = request('page.size', 15),
-                $columns = ['*'],
-                $pageName = 'page[number]',
-                $page = request('page.number', 1),
-            )->appends(request()->only('sort', 'page.size'))
-        );
+        return AdminUserCollection::make($adminUsersQuery->jsonPaginate());
     }
 
 
