@@ -1,15 +1,13 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 describe('Paginate admin users', function () {
 
     it('can paginate admin users', function () {
         $adminUsers = User::factory()->count(6)->create();
 
+        // admin-users?page[size]=2&page[number]=2
         $url = route('api.v1.admin-users.index', [
             'page' => [
                 'size' => 2,
@@ -56,6 +54,7 @@ describe('Paginate admin users', function () {
         User::factory()->create(['name' => 'A Name']);
         User::factory()->create(['name' => 'B Name']);
 
+        // admin-users?page[size]=1&page[number]=2&sort=name
         $url = route('api.v1.admin-users.index', [
             'page' => [
                 'size' => 1,
