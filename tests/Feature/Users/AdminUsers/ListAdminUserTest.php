@@ -31,7 +31,8 @@ describe('List user test', function () {
 
         $users = User::factory()->count(3)->create();
         $response = $this->getJson(route('api.v1.admin-users.index'));
-        expect($response->json())->toMatchArray([
+
+        $response->assertJson([
             'data' => [
                 [
                     'type' => 'users',
