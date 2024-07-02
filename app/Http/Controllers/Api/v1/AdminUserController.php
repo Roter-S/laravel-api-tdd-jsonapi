@@ -12,7 +12,6 @@ use Illuminate\Http\Response;
 
 class AdminUserController extends Controller
 {
-
     public function index(): AdminUserCollection
     {
         $adminUsersQuery = User::query();
