@@ -14,35 +14,27 @@ class AdminUserController extends Controller
 {
     public function index(): AdminUserCollection
     {
-        $adminUsersQuery = User::query();
+        $adminUsersQuery = User::query()
+            ->allowedFilters([
+                'name',
+                'last_name',
+                'email',
+                'date_of_birth',
+                'phone_number',
+                'status',
+                'roles'
+            ])->allowedSorts([
+                'slug',
+                'name',
+                'last_name',
+                'email',
+                'password',
+                'date_of_birth',
+                'phone_number',
+                'status',
+            ])->jsonPaginate();
 
-        $allowedFilters = [
-            'name',
-            'last_name',
-            'email',
-            'date_of_birth',
-            'phone_number',
-            'status',
-            'roles'
-        ];
-
-        foreach (request('filter', []) as $filter => $value) {
-            abort_unless(in_array($filter, $allowedFilters), 400, 'Filter not allowed');
-            $adminUsersQuery->where($filter, 'like', '%' . $value . '%');
-        }
-
-        $adminUsersQuery->allowedSorts([
-            'slug',
-            'name',
-            'last_name',
-            'email',
-            'password',
-            'date_of_birth',
-            'phone_number',
-            'status',
-        ]);
-
-        return AdminUserCollection::make($adminUsersQuery->jsonPaginate());
+        return AdminUserCollection::make($adminUsersQuery);
     }
 
 

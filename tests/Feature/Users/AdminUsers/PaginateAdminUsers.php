@@ -3,7 +3,6 @@
 use App\Models\User;
 
 describe('Paginate admin users', function () {
-
     it('can paginate admin users', function () {
         $adminUsers = User::factory()->count(6)->create();
 
@@ -49,7 +48,7 @@ describe('Paginate admin users', function () {
 
     });
 
-    it('can paginate and sort admin users', function () {
+    it('can paginate sorted admin users', function () {
         User::factory()->create(['name' => 'C Name']);
         User::factory()->create(['name' => 'A Name']);
         User::factory()->create(['name' => 'B Name']);
@@ -84,4 +83,34 @@ describe('Paginate admin users', function () {
 
     });
 
+    it('can paginate filtered admin users', function () {
+        User::factory()->count(6)->create();
+        User::factory()->create(['name' => 'C Laravel']);
+        User::factory()->create(['name' => 'A Laravel']);
+        User::factory()->create(['name' => 'B Laravel']);
+
+        // admin-users?filter[name]=laravel&page[size]=1&page[number]=2
+        $url = route('api.v1.admin-users.index', [
+            'filter[name]' => 'laravel',
+            'page' => [
+                'size' => 1,
+                'number' => 2
+            ]
+        ]);
+
+        $response = $this->getJson($url);
+
+
+
+        $firstLink = urldecode($response->json('links.first'));
+        $lastLink = urldecode($response->json('links.last'));
+        $prevLink = urldecode($response->json('links.prev'));
+        $nextLink = urldecode($response->json('links.next'));
+
+        $this->assertStringContainsString('filter[name]', $firstLink);
+        $this->assertStringContainsString('filter[name]', $lastLink);
+        $this->assertStringContainsString('filter[name]', $prevLink);
+        $this->assertStringContainsString('filter[name]', $nextLink);
+
+    });
 });
