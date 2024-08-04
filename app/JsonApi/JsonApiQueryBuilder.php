@@ -41,6 +41,15 @@ class JsonApiQueryBuilder
         };
     }
 
+    public function sparseFieldSet(): Closure
+    {
+        return function () {
+            /* @var Builder $this */
+            $fields = explode(',', request()->input('fields.admin-users'));
+            return $this->addSelect($fields);
+        };
+    }
+
     public function jsonPaginate(): Closure
     {
         return function () {

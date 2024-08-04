@@ -32,7 +32,8 @@ class AdminUserController extends Controller
                 'date_of_birth',
                 'phone_number',
                 'status',
-            ])->jsonPaginate();
+            ])->sparseFieldSet()
+            ->jsonPaginate();
 
         return AdminUserCollection::make($adminUsersQuery);
     }
