@@ -1,11 +1,7 @@
 <?php
 
-use App\Enums\Roles;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 describe('Sort admin users test', function () {
 

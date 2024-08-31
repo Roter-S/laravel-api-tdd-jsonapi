@@ -3,9 +3,10 @@
 namespace Tests;
 
 use App\Traits\MakesJsonApiRequests;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use MakesJsonApiRequests;
+    use MakesJsonApiRequests, RefreshDatabase;
 }

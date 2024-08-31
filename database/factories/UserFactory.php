@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'date_of_birth' => $this->faker->date(),
             'phone_number' => $this->faker->phoneNumber(),
             'status' => static::$status ??= $this->faker->randomElement([UserStatus::Active->value, UserStatus::Inactive->value]),
-            'roles' => [$this->faker->randomElement([Roles::GroupAdministrator->value, Roles::Musician->value])],
+            'roles' => [Roles::Musician->value],
             'remember_token' => Str::random(10),
             'instrument_id' => null,
             'voice_id' => null,

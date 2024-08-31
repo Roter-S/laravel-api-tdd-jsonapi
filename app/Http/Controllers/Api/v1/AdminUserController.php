@@ -2,31 +2,40 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Enums\Roles;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveAdminUserRequest;
 use App\Http\Resources\AdminUserCollection;
 use App\Http\Resources\AdminUserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AdminUserController extends Controller
 {
-
     public function index(): AdminUserCollection
     {
-        $adminUsersQuery = User::allowedSorts([
-            'slug',
-            'name',
-            'last_name',
-            'email',
-            'password',
-            'date_of_birth',
-            'phone_number',
-            'status',
-        ]);
+        $adminUsersQuery = User::query()
+            ->allowedFilters([
+                'name',
+                'last_name',
+                'email',
+                'date_of_birth',
+                'phone_number',
+                'status',
+                'roles'
+            ])->allowedSorts([
+                'slug',
+                'name',
+                'last_name',
+                'email',
+                'password',
+                'date_of_birth',
+                'phone_number',
+                'status',
+            ])->sparseFieldSet()
+            ->jsonPaginate();
 
-        return AdminUserCollection::make($adminUsersQuery->get());
+        return AdminUserCollection::make($adminUsersQuery);
     }
 
 

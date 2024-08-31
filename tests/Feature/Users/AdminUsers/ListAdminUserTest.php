@@ -1,9 +1,6 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 describe('List user test', function () {
 
@@ -31,7 +28,8 @@ describe('List user test', function () {
 
         $users = User::factory()->count(3)->create();
         $response = $this->getJson(route('api.v1.admin-users.index'));
-        expect($response->json())->toMatchArray([
+
+        $response->assertJson([
             'data' => [
                 [
                     'type' => 'users',

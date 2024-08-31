@@ -1,10 +1,9 @@
 <?php
 
+use App\Enums\Roles;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
+use Illuminate\Support\Facades\Hash;
 
 beforeEach(function () {
     $this->attributes = [
@@ -14,11 +13,11 @@ beforeEach(function () {
         'last_name' => fake()->lastName(),
         'email' => fake()->unique()->safeEmail(),
         'email_verified_at' => null,
-        'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        'password' => Hash::make('password'),
         'date_of_birth' => fake()->date(),
         'phone_number' => fake()->phoneNumber(),
         'status' => fake()->randomElement([UserStatus::Active->value, UserStatus::Inactive->value]),
-        'roles' => ['admin'],
+        'roles' => [Roles::SuperAdministrator->value],
         'remember_token' => null,
         'instrument_id' => null,
         'voice_id' => null,
